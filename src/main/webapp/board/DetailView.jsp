@@ -109,6 +109,11 @@ height:100%;
 	display:none;
 }
 
+.detailImg{
+	width:50%;
+	height:300px;
+}
+
 </style>
 </head>
 <body>
@@ -146,7 +151,13 @@ height:100%;
 						<td colspan="5">
 						<div class="form-control summernote" id="board_content" name="board_content" readonly>
 						${dto.getBoard_content()}
+						<div>
+						<c:if test="${!empty fileDTO.getSystem_name()}">
+							<img class="detailImg" src="${pageContext.request.contextPath}/${fileDTO.getPicAddr()}/${fileDTO.getSystem_name()}">
+						</c:if>
 						</div>
+						</div>
+						
 						<textarea id="modify_content" class="modify_content" name="board_content">${dto.getBoard_content()}</textarea>
 						</td>
 					</tr>
@@ -156,11 +167,15 @@ height:100%;
 						<td colspan="12">
 						<div class="container subContainer">
 					<div class="row">
-						<div class="col">
-							<button type="button" id="btnRecommend">
+						<div class="col recommendBox">
+							<button type="button" id="btn_recommend">
 								<img
 									src="https://news.imaeil.com/photos/2018/02/07/2018020710243848707_m.jpg">추천
 							</button>
+							<div class="row">
+								<div class="col" style="font-weight:bold">${dto.getRecommended_count()}</div>
+							</div>
+							
 						</div>
 						<div class="col">
 							<button type="button" id="btnReport" data-bs-toggle="modal"
@@ -181,12 +196,12 @@ height:100%;
 												data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
 										<div class="modal-body">
-											<input type="text" id="report_reason" placeholder="신고사유를 작성해주세요.">
+											<input type="text" id="report_reason" name="report_reason" placeholder="신고사유를 작성해주세요.">
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-secondary"
 												data-bs-dismiss="modal">닫기</button>
-											<button type="submit" class="btn btn-primary">전송</button>
+											<button type="button" id="btn_reportSubmit" class="btn btn-primary">전송</button>
 										</div>
 									</div>
 								</div>
@@ -247,18 +262,32 @@ height:100%;
 			<!-- currentPage, board_seq 넘겨주는 div (hidden 처리) -->
            	 <input type="text" name="currentPage" value="${currentPage}" hidden>
 			 <input type="text" name="board_seq" value="${dto.getBoard_seq()}" hidden>
+			 <input type="text" name="report_seq" id="report_seq" hidden>
 		</form>
 	</div>
 
 	<script>
 	
 	// 추천 버튼 클릭했을 때 이벤트 처리
+		let btn_recommend = document.getElementById("btn_recommend");
+		let recommendDiv = document.getElementById("recommendDiv");
+		
+		btn_recommend.addEventListener("click",function(){
+			console.log("추천 버튼 클릭");
+			location.href = "${pageContext.request.contextPath}/RecommendProc.bo?board_seq=${dto.getBoard_seq()}&currentPage=${currentPage}";
+		});	
 	
 	
-	// 신고 버튼 클릭했을 때 이벤트 처리
-	let btnReport = document.getElementById("btnReport");
-	btnReport.addEventListener("click",function(){
-	})
+
+	// 신고 버튼 클릭 후 전송 눌렀을 때 이벤트 처리
+	$(document).ready(function(){
+		let btn_reportSubmit = document.getElementById("btn_reportSubmit");
+		btn_reportSubmit.addEventListener("click",function(){
+			location.href="${pageContext.request.contextPath}/reportProc.rp?board_seq=${dto.getBoard_seq()}&currentPage=${currentPage}&report_reason="+$("#report_reason").val(); // get 방식으로 넘기기
+			// get방식 하기 전엔 form 태그 제출을 안했기 때문에 null 로 넘겨졌음, 근데 굳이 신고사유만 제출한건데 모든 내용이 담긴 form은 전송할 필요가 없어서 get 방식 사용
+		})	
+	});
+	
 	
 	// 게시글 수정 버튼 클릭했을 때 이벤트 처리
 	let btn_boardModify = document.getElementById("btn_boardModify");
@@ -458,6 +487,9 @@ height:100%;
 				console.log(e);
 			});
 		});
+		
+
+		
 	});
 	</script>
 </body>

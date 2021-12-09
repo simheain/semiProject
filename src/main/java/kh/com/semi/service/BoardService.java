@@ -53,8 +53,8 @@ public class BoardService {
 		
 		ArrayList<BoardDTO> list = dao.getBoardList(startRange,endRange);
 		for(BoardDTO dto : list) {
-			System.out.println(dto.getBoard_seq() + ":" + dto.getBoard_title() + ":" + dto.getWriter_nickname() + ":"
-					+ dto.getWritten_date() + ":" + dto.getView_count() + ":" + dto.getRecommended_count());
+			// System.out.println(dto.getBoard_seq() + ":" + dto.getBoard_title() + ":" + dto.getWriter_nickname() + ":"
+			//		+ dto.getWritten_date() + ":" + dto.getView_count() + ":" + dto.getRecommended_count());
 		}
 		return list;
 	}

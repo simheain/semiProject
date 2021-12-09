@@ -89,9 +89,10 @@ input {
 			</tr>
 			<tr>
 				<th class="col-2">파일첨부</th>
-				<td class="col-10"><input type="file" class="custom-file-input"
-					name="file"> <label class="custom-file-label"
-					for="inputGroupFile02" aria-describedby="inputGroupFileAddon02"></label>
+				<td class="col-10 uploadTd">
+				<input type="file" class="custom-file-input" name="file" multiple="multiple">
+				<label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02"></label>
+				<div class="uploadResult"> </div>
 				</td>
 			</tr>
 			<tr>
@@ -110,10 +111,7 @@ input {
 	</div>
 	
 	<script>
-	
 
-
-	
 	let title = document.getElementById("title"); // title 객체
 	let board_content = document.getElementById("board_content"); // textarea의 summernote 객체
 		// 뒤로가기 버튼 눌렀을 때 이벤트 처리
@@ -121,15 +119,10 @@ input {
 		btnBack.addEventListener("click",function(){
 			location.href="${pageContext.request.contextPath}/toBoard.bo?currentPage=1";
 		})
-		
-		
-		
-		
-		
+
 		// 작성 버튼 눌렀을 때 이벤트 처리
 		let btnWrite = document.getElementById("btnWrite");
 		btnWrite.addEventListener("click",function(){
-			
 			//욕설 필터링 정규식
 			let regex_word1 = /[썅|ㅄ]{1}/gm;
 			let regex_word2 = /(시.*?발)|(병신.*?)|(씨.*?발)|(존.*?나)|(ㅈ.*?ㄴ)|(ㅅ.*?ㅂ)|(ㅂ.*?ㅅ)/gm;			

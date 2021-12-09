@@ -60,7 +60,7 @@ public class CommentController extends HttpServlet {
 
 			Gson gson = new Gson();
 			String rs = gson.toJson(commentList);
-			System.out.println(rs);
+			// System.out.println(rs);
 			response.getWriter().write(rs);
 		} else if (cmd.equals("/deleteProc.co")) {
 			System.out.println("´ñ±Û »èÁ¦ ¿äÃ» µµÂø");

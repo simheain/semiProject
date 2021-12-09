@@ -32,9 +32,8 @@ public class BoardDAO {
 
 	// seq_board를 얻어오는 메서드
 	public int getBoardSeq() {
-		String sql = "SELECT seq_board.nextval FROM dual";
+		String sql = "SELECT board_seq FROM tbl_board ORDER BY 1 DESC";
 		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
-
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next())
 				return rs.getInt(1);
@@ -92,6 +91,36 @@ public class BoardDAO {
 		return null;
 	}
 
+	// 추천수 + 해주는 메서드
+	public int plusRecommended_count(int board_seq) {
+		String sql = "UPDATE tbl_board SET recommended_count = recommended_count +1 WHERE board_seq = ?";
+		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setInt(1, board_seq);
+			int rs = pstmt.executeUpdate();
+			if (rs != -1) {
+				return rs;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	// 조회수 - 해주는 메서드 (추천 눌렀을 때 reload 되서 조회수 올라가는게 거슬려서 작성함)
+	public int minusView_count(int board_seq) {
+		String sql = "UPDATE tbl_board SET view_count = view_count -1 WHERE board_seq = ?";
+		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setInt(1, board_seq);
+			int rs = pstmt.executeUpdate();
+			if (rs != -1) {
+				return rs;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
 	// 조회수 + 해주는 메서드
 	public int plusView_count(int board_seq) {
 		String sql = "UPDATE tbl_board SET view_count = view_count +1 WHERE board_seq = ?";
@@ -138,36 +167,36 @@ public class BoardDAO {
 	// 게시글 삭제하는 메서드
 	public int deleteBySeq(int board_seq) {
 		String sql = "DELETE FROM tbl_board WHERE board_seq = ?";
-		try(Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);){
+		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmt.setInt(1, board_seq);
 			int rs = pstmt.executeUpdate();
-			if(rs!=-1) {
+			if (rs != -1) {
 				return rs;
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return -1;
 	}
-	
+
 	// 게시글 수정하는 메서드
 	public int modifyBySeq(int board_seq, String board_title, String board_content) {
 		String sql = "UPDATE tbl_board SET board_title=?, board_content=? WHERE board_seq =? ";
-		try(Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);){
+		try (Connection con = this.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmt.setString(1, board_title);
-			pstmt.setString(2,board_content);
+			pstmt.setString(2, board_content);
 			pstmt.setInt(3, board_seq);
-			
+
 			int rs = pstmt.executeUpdate();
-			if(rs!=-1) {
+			if (rs != -1) {
 				return rs;
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return -1;
 	}
-	
+
 	// 게시글 총 개수 조회하는 메서드 (페이징에 필요)
 	public int countAll() {
 		String sql = "SELECT count(*) FROM tbl_board";
